@@ -1,15 +1,17 @@
-# Go
-backend/bin/
-backend/server
-backend/.env
+# macOS
+.DS_Store
 
-# Node / Next.js
+# frontend
 frontend/node_modules/
 frontend/.next/
-frontend/.env.local
 
-# Docker
+# local database files
 infra/docker/data/
+infra/docker/data_mysql_backup/
 
-# OS
-.DS_Store
+# postgres volume data if created locally
+infra/docker/postgres_data/
+
+# Go build artifacts
+backend/server
+backend/bin/
