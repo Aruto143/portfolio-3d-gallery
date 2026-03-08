@@ -5,46 +5,40 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
 
-	infra "github.com/Aruto143/portfolio-backend/internal/infrastructure/mysql"
-	ifhttp "github.com/Aruto143/portfolio-backend/internal/interface/http"
+	infraDB "github.com/Aruto143/portfolio-backend/internal/infra/db"
+	infraRepo "github.com/Aruto143/portfolio-backend/internal/infrastructure/postgres"
+	httpif "github.com/Aruto143/portfolio-backend/internal/interface/http"
 	usecase "github.com/Aruto143/portfolio-backend/internal/usecase/work"
 )
 
 func main() {
-	// なぜ環境変数か？
-	// → 本番（Railway）とローカルで接続先を切り替えるため
-	dsn := os.Getenv("DB_DSN")
-	if dsn == "" {
-		// ローカル開発用のデフォルト値
-		dsn = "appuser:apppass@tcp(localhost:3306)/portfolio?parseTime=true&charset=utf8mb4"
-	}
-
-	db, err := sqlx.Open("mysql", dsn)
-	if err != nil {
-		log.Fatalf("failed to open db: %v", err)
-	}
+	db := infraDB.NewPostgresDB()
 	defer db.Close()
 
-	if err := db.Ping(); err != nil {
-		log.Fatalf("failed to connect db: %v", err)
-	}
+	workRepo := infraRepo.NewWorkRepository(db)
 
-	// DI（依存性注入）
-	repo := infra.NewWorkRepository(db)
-	listUC := usecase.NewListWorksUsecase(repo)
-	handler := ifhttp.NewWorkHandler(listUC)
+	listWorksUC := usecase.NewListWorksUsecase(workRepo)
+
+	workHandler := httpif.NewWorkHandler(listWorksUC)
 
 	r := gin.Default()
 
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok"})
+	})
+
 	api := r.Group("/api")
 	{
-		api.GET("/works", handler.GetWorks)
+		api.GET("/works", workHandler.GetWorks)
 	}
 
-	if err := r.Run(":8080"); err != nil {
-		log.Fatalf("server error: %v", err)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	if err := r.Run(":" + port); err != nil {
+		log.Fatalf("failed to run server: %v", err)
 	}
 }
