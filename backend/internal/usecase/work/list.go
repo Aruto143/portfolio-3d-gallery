@@ -6,11 +6,11 @@ import "context"
 // ここでは簡略化して同じpackageに置いてしまうが、
 // 実際には domain/work と usecase/work で package を分けてもOK。
 type Work struct {
-	ID          int64
-	Title       string
-	Slug        string
-	Summary     string
-	ThumbnailURL string
+	ID           int64  `json:"id"`
+	Title        string `json:"title"`
+	Slug         string `json:"slug"`
+	Summary      string `json:"summary"`
+	ThumbnailURL string `json:"thumbnailUrl"`
 }
 
 type WorkRepository interface {
