@@ -19,8 +19,9 @@ func main() {
 	workRepo := infraRepo.NewWorkRepository(db)
 
 	listWorksUC := usecase.NewListWorksUsecase(workRepo)
+	findWorkBySlugUC := usecase.NewFindWorkBySlugUsecase(workRepo)
 
-	workHandler := httpif.NewWorkHandler(listWorksUC)
+	workHandler := httpif.NewWorkHandler(listWorksUC, findWorkBySlugUC)
 
 	r := gin.Default()
 
@@ -31,6 +32,7 @@ func main() {
 	api := r.Group("/api")
 	{
 		api.GET("/works", workHandler.GetWorks)
+		api.GET("/works/:slug", workHandler.GetWorkBySlug)
 	}
 
 	port := os.Getenv("PORT")

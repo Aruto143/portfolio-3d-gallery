@@ -15,6 +15,7 @@ type Work struct {
 
 type WorkRepository interface {
 	List(ctx context.Context) ([]Work, error)
+	FindBySlug(ctx context.Context, slug string) (*Work, error)
 }
 
 // ListWorksUsecase は「作品を一覧取得する」ユースケース。

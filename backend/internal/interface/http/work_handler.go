@@ -1,7 +1,8 @@
 package http
 
 import (
-	"log"
+	"database/sql"
+	"errors"
 	"net/http"
 
 	usecase "github.com/Aruto143/portfolio-backend/internal/usecase/work"
@@ -9,21 +10,42 @@ import (
 )
 
 type WorkHandler struct {
-    listWorks *usecase.ListWorksUsecase
+	listWorks      *usecase.ListWorksUsecase
+	findWorkBySlug *usecase.FindWorkBySlugUsecase
 }
 
-func NewWorkHandler(list *usecase.ListWorksUsecase) *WorkHandler {
-    return &WorkHandler{listWorks: list}
+func NewWorkHandler(
+	list *usecase.ListWorksUsecase,
+	find *usecase.FindWorkBySlugUsecase,
+) *WorkHandler {
+	return &WorkHandler{
+		listWorks:      list,
+		findWorkBySlug: find,
+	}
 }
 
 func (h *WorkHandler) GetWorks(c *gin.Context) {
-    works, err := h.listWorks.Run(c.Request.Context())
-    if err != nil {
-        // ★ ここ追加：エラー内容をログに出す
-        log.Printf("GetWorks error: %v", err)
+	works, err := h.listWorks.Run(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch works"})
+		return
+	}
+	c.JSON(http.StatusOK, works)
+}
 
-        c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch works"})
-        return
-    }
-    c.JSON(http.StatusOK, works)
+func (h *WorkHandler) GetWorkBySlug(c *gin.Context) {
+	slug := c.Param("slug")
+
+	work, err := h.findWorkBySlug.Run(c.Request.Context(), slug)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "work not found"})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch work"})
+		return
+	}
+
+	c.JSON(http.StatusOK, work)
 }

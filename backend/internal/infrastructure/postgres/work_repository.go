@@ -55,3 +55,32 @@ func (r *WorkRepository) List(ctx context.Context) ([]usecase.Work, error) {
 
 	return works, nil
 }
+
+func (r *WorkRepository) FindBySlug(ctx context.Context, slug string) (*usecase.Work, error) {
+	row := workRow{}
+
+	query := `
+		SELECT
+			id,
+			title,
+			slug,
+			summary,
+			thumbnail_url
+		FROM works
+		WHERE slug = $1
+	`
+
+	if err := r.db.GetContext(ctx, &row, query, slug); err != nil {
+		return nil, err
+	}
+
+	work := &usecase.Work{
+		ID:           row.ID,
+		Title:        row.Title,
+		Slug:         row.Slug,
+		Summary:      row.Summary,
+		ThumbnailURL: row.ThumbnailURL,
+	}
+
+	return work, nil
+}
