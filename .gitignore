@@ -1,17 +1,40 @@
 # macOS
 .DS_Store
 
-# frontend
+# -----------------------------------
+# Frontend (Next.js)
+# -----------------------------------
 frontend/node_modules/
 frontend/.next/
+frontend/out/
+frontend/.vercel/
 
-# local database files
+# Next.js environment files
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# -----------------------------------
+# Backend (Go)
+# -----------------------------------
+backend/server
+backend/bin/
+backend/.env
+backend/.env.local
+
+# -----------------------------------
+# Logs
+# -----------------------------------
+*.log
+
+# -----------------------------------
+# Local DB / Docker artifacts
+# -----------------------------------
+
+# MySQL legacy local data (old setup)
 infra/docker/data/
 infra/docker/data_mysql_backup/
 
-# postgres volume data if created locally
+# If you ever switch Postgres to a host-mounted directory later
 infra/docker/postgres_data/
-
-# Go build artifacts
-backend/server
-backend/bin/
