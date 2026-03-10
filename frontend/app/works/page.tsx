@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 type Work = {
   id: number
   title: string
@@ -27,11 +29,13 @@ export default async function WorksPage() {
 
       <div className="grid gap-4">
         {works.map((work) => (
-          <article key={work.slug} className="rounded-lg border p-4 shadow-sm">
-            <h2 className="text-xl font-semibold">{work.title}</h2>
-            <p className="mt-1 text-sm text-gray-500">{work.slug}</p>
-            <p className="mt-3">{work.summary}</p>
-          </article>
+          <Link key={work.slug} href={`/works/${work.slug}`}>
+            <article className="rounded-lg border p-4 shadow-sm transition hover:bg-gray-50">
+              <h2 className="text-xl font-semibold">{work.title}</h2>
+              <p className="mt-1 text-sm text-gray-500">{work.slug}</p>
+              <p className="mt-3">{work.summary}</p>
+            </article>
+          </Link>
         ))}
       </div>
     </main>
