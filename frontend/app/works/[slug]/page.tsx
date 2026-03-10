@@ -13,12 +13,12 @@ type WorksDetailPageProps = {
 }
 
 async function fetchWorkBySlug(slug: string): Promise<Work> {
-  const res = await fetch(
-    `http://host.docker.internal:18080/api/works/${slug}`,
-    {
-      cache: "no-store",
-    }
-  )
+  const apiBaseUrl =
+    process.env.API_BASE_URL ?? "http://backend:18080"
+
+  const res = await fetch(`${apiBaseUrl}/api/works/${slug}`, {
+    cache: "no-store",
+  })
 
   if (res.status === 404) {
     throw new Error("NOT_FOUND")

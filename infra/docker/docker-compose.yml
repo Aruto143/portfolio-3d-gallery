@@ -31,5 +31,15 @@ services:
       db:
         condition: service_healthy
 
+  frontend:
+    build: ../../frontend
+    container_name: portfolio-frontend
+    environment:
+      API_BASE_URL: "http://backend:18080"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
 volumes:
   postgres_data:
