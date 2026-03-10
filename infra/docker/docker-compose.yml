@@ -19,5 +19,17 @@ services:
       timeout: 5s
       retries: 5
 
+  backend:
+    build: ../../backend
+    container_name: portfolio-backend
+    environment:
+      PORT: "18080"
+      DATABASE_URL: "postgres://appuser:apppass@db:5432/portfolio?sslmode=disable"
+    ports:
+      - "18080:18080"
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   postgres_data:
