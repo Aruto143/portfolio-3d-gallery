@@ -19,6 +19,6 @@ WORKDIR /app
 COPY --from=builder /app/server .
 
 # ポートは環境変数で管理してもOK
-ENV PORT=8080
+ENV PORT=18080
 
 CMD ["./server"]
