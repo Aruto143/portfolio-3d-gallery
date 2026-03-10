@@ -10,7 +10,7 @@ export default function HomePage() {
         </h1>
         <p className="max-w-3xl leading-7 text-gray-700">
           Next.js / Go / PostgreSQL を用いて構築している、作品一覧・作品詳細を表示する
-          Webアプリケーションです。機能だけでなく、構成・設計・開発基盤の整理も重視して実装しています。
+          Webアプリケーションです。
         </p>
       </section>
 
