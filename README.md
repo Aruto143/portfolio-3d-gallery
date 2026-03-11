@@ -124,12 +124,7 @@ backend/
 
 ## 今後やりたいこと
 
-- GitHub Actions による CI の追加
 - README への構成図・設計意図の追記
 - トップページの実装
 - 管理画面の追加
 - 認証機能の追加
-- デプロイ対応
-  - frontend: Vercel
-  - backend: Render
-  - database: PostgreSQL
